@@ -38,7 +38,7 @@ public partial struct ZombieSpawnSystem : ISystem
                 ecb.SetComponent(z, LocalTransform.FromPositionRotationScale(pos, quaternion.identity, 1f));
                 ecb.AddComponent<ZombieTag>(z);
                 ecb.AddComponent(z, new Velocity { Value = float3.zero });
-                ecb.AddComponent(z, new MoveSpeed { Value = sp.Speed });
+                ecb.AddComponent(z, new MoveSpeed { Value = sp.Speed > 0 ? sp.Speed : 3f });
 
                 // 🔹 add these so the selector & steering can see them:
                 ecb.AddComponent(z, new DesiredVelocity { Value = float3.zero });

@@ -1,0 +1,14 @@
+[
+  {
+    "id": 100,
+    "speed": 2.0,
+    "health": 50,
+    "behavior": "basic"
+  },
+  {
+    "id": 101,
+    "speed": 3.5,
+    "health": 35,
+    "behavior": "runner"
+  }
+]

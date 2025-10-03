@@ -1,0 +1,21 @@
+[
+  {
+    "id": 1,
+    "name": "Wood Plank",
+    "weight": 2.0,
+    "stackSize": 10,
+    "tags": [
+      "material",
+      "flammable"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Canned Beans",
+    "weight": 0.5,
+    "stackSize": 4,
+    "tags": [
+      "food"
+    ]
+  }
+]

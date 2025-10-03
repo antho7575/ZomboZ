@@ -1,0 +1,20 @@
+{
+  "id": "city",
+  "buildingSets": [
+    "apt_block",
+    "storefront",
+    "warehouse"
+  ],
+  "lootTables": [
+    {
+      "itemIds": [
+        1,
+        2
+      ],
+      "weights": [
+        0.6,
+        0.4
+      ]
+    }
+  ]
+}

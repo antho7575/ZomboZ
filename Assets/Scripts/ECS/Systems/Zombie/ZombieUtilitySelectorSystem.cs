@@ -2,6 +2,7 @@
 using Unity.Mathematics;
 using Unity.Transforms;
 
+
 [UpdateInGroup(typeof(SimulationSystemGroup))]
 [UpdateAfter(typeof(ZombieSpawnSystem))]   // ⬅️ important
 public partial struct ZombieUtilitySelectorSystem : ISystem

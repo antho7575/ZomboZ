@@ -162,6 +162,7 @@ GameObject:
   m_Component:
   - component: {fileID: 952317725}
   - component: {fileID: 952317726}
+  - component: {fileID: 952317727}
   m_Layer: 0
   m_Name: ZombieSpawnerAuthoring
   m_TagString: Untagged
@@ -198,8 +199,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ZombieSpawnerAuthoring
   ZombiePrefab: {fileID: 3725938886595844628, guid: ddccc48184bc7ac42ae023ca613a15dc, type: 3}
   Count: 10000
-  Area: {x: 60, y: 60}
-  Speed: 3.5
+  Area: {x: 600, y: 600}
+  Speed: 1
+--- !u!114 &952317727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 952317724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05f4895a9a522b74085533e0c9b66012, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ZombiePrefabAuthoring
+  ZombiePrefab: {fileID: 3725938886595844628, guid: ddccc48184bc7ac42ae023ca613a15dc, type: 3}
 --- !u!1 &1861212463
 GameObject:
   m_ObjectHideFlags: 0
@@ -244,10 +258,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbd30aecf891d6c4c8a380deda6e3549, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlowFieldAuthoring
-  width: 64
-  height: 64
-  cellSize: 1
-  originWS:
+  Width: 64
+  Height: 64
+  CellSize: 1
+  OriginWS:
     x: 0
     y: 0
 --- !u!1660057539 &9223372036854775807

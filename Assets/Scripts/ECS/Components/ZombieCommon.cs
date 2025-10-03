@@ -15,3 +15,19 @@ public struct ZombieBlackboard : IComponentData
     public float3 LastKnownPlayerPos;
     public float Hunger; // 0..1 if you like
 }
+
+// Simple LOD tags
+public struct LODNear : IComponentData { }
+public struct LODMid : IComponentData { }
+public struct LODFar : IComponentData { }
+
+// Store this for unloaded zombies
+public struct ZombieRecord
+{
+    public int Id;
+    public int2 Sector;
+    public float3 Pos;
+    public float Heading;       // radians
+    public uint WanderSeed;
+    public float TimeSinceSeen;  // for your utility selector later
+}

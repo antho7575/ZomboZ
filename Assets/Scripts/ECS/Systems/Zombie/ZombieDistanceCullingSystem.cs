@@ -6,7 +6,7 @@ using Unity.Transforms;
 using Unity.Rendering;
 using UnityEngine;
 
-[DisableAutoCreation]
+//[DisableAutoCreation]
 [BurstCompile]
 [UpdateInGroup(typeof(SimulationSystemGroup))]
 [UpdateAfter(typeof(ZombieSpawnSystem))]
@@ -53,35 +53,41 @@ public partial struct ZombieDistanceCullingSystem : ISystem
         using var ents = _zombieQuery.ToEntityArray(Allocator.Temp);
         using var xforms = _zombieQuery.ToComponentDataArray<LocalTransform>(Allocator.Temp);
 
-        for (int i = 0; i < ents.Length; i++)
-        {
-            var root = ents[i];
-            var xf = xforms[i];
-            total++;
+        //for (int i = 0; i < ents.Length; i++)
+        //{
+        //    var root = ents[i];
+        //    var xf = xforms[i];
+        //    total++;
 
-            // choose the entity that actually renders (has MaterialMeshInfo)
-            Entity renderE = root;
-            if (!_mmiRO.HasComponent(renderE))
-            {
-                if (_legRO.HasBuffer(root))
-                {
-                    var buf = _legRO[root];
-                    for (int j = 0; j < buf.Length; j++)
-                    {
-                        var child = buf[j].Value;
-                        if (_mmiRO.HasComponent(child)) { renderE = child; break; }
-                    }
-                }
-            }
+        //    // choose the entity that actually renders (has MaterialMeshInfo)
+        //    Entity renderE = root;
+        //    if (!_mmiRO.HasComponent(renderE))
+        //    {
+        //        if (_legRO.HasBuffer(root))
+        //        {
+        //            var buf = _legRO[root];
+        //            for (int j = 0; j < buf.Length; j++)
+        //            {
+        //                var child = buf[j].Value;
+        //                if (_mmiRO.HasComponent(child)) { renderE = child; break; }
+        //            }
+        //        }
+        //    }
 
-            float3 d = xf.Position - cam; d.y = 0;
-            bool far = math.lengthsq(d) > maxSq;
+        //    float3 d = xf.Position - cam; d.y = 0;
+        //    bool far = math.lengthsq(d) > maxSq;
 
-            bool hidden = em.HasComponent<DisableRendering>(renderE);
-            if (far && !hidden) { ecb.AddComponent<DisableRendering>(renderE); culled++; }
-            else if (!far && hidden) { ecb.RemoveComponent<DisableRendering>(renderE); }
-            else if (hidden) { culled++; }
-        }
+        //    bool hidden = em.HasComponent<DisableRendering>(renderE);
+        //    if (far && !hidden)
+        //    {
+        //        ecb.AddComponent<DisableRendering>(renderE); ecb.AddComponent<WanderState>(renderE); culled++;
+        //    }
+        //    else if (!far && hidden)
+        //    {
+        //        ecb.DestroyEntity(root); // force respawn via spawner   
+        //    }
+        //    else if (hidden) { culled++; }
+        //}
 
         ecb.Playback(em);
         ecb.Dispose();

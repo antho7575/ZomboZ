@@ -1,54 +1,51 @@
-﻿using Unity.Entities;
+﻿using Unity.Burst;
+using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-// ✅ Run in Simulation and BEFORE TransformSystemGroup so we write LocalTransform
 [UpdateInGroup(typeof(SimulationSystemGroup))]
-[UpdateBefore(typeof(TransformSystemGroup))]
+[UpdateAfter(typeof(ZombieWanderSystem))]          // make it run after the writer of DesiredVelocity
+[UpdateBefore(typeof(TransformSystemGroup))]        // you modify LocalTransform before transform systems
 public partial struct ZombieSteeringSystem : ISystem
 {
-    private EntityQuery _steerQuery;
-    private ComponentLookup<LocalTransform> _xfLookup;
-    private ComponentLookup<Velocity> _vLookup;
-    private ComponentLookup<DesiredVelocity> _dvLookup;
-
+    [BurstCompile]
     public void OnCreate(ref SystemState s)
     {
-        _steerQuery = new EntityQueryBuilder(Unity.Collections.Allocator.Temp)
-            .WithAll<ZombieTag, LocalTransform, Velocity, DesiredVelocity>()
-            .Build(ref s);
-
-        _xfLookup = s.GetComponentLookup<LocalTransform>(false);   // write
-        _vLookup = s.GetComponentLookup<Velocity>(false);          // write
-        _dvLookup = s.GetComponentLookup<DesiredVelocity>(true);    // read
+        // Only run when these exist; avoids scheduling empty jobs
+        s.RequireForUpdate<ZombieTag>();
+        s.RequireForUpdate<DesiredVelocity>();
+        s.RequireForUpdate<Velocity>();
+        s.RequireForUpdate<LocalTransform>();
     }
 
+    [BurstCompile]
     public void OnUpdate(ref SystemState s)
     {
-        float dt = SystemAPI.Time.DeltaTime;
+        var dt = SystemAPI.Time.DeltaTime;
 
-        // Refresh lookups each frame
-        _xfLookup.Update(ref s);
-        _vLookup.Update(ref s);
-        _dvLookup.Update(ref s);
-
-        // Ensure we’re not racing with prior readers
-        // (usually ordering is enough; this is extra safety if you still see warnings)
-        // s.Dependency.Complete();
-
-        using var ents = _steerQuery.ToEntityArray(Unity.Collections.Allocator.Temp);
-        for (int i = 0; i < ents.Length; i++)
+        // Schedule a parallel job — no ComponentLookup, no ToEntityArray allocs
+        s.Dependency = new SteeringJob
         {
-            var e = ents[i];
-            var xf = _xfLookup[e];
-            var v = _vLookup[e];
-            var dv = _dvLookup[e];
+            dt = dt,
+            smoothing = 0.25f        // your lerp factor
+        }.ScheduleParallel(s.Dependency);
+    }
 
-            v.Value = math.lerp(v.Value, dv.Value, 0.25f);
-            xf.Position += v.Value * dt;
+    [BurstCompile]
+    [WithAll(typeof(ZombieTag))]   // only zombies
+    partial struct SteeringJob : IJobEntity
+    {
+        public float dt;
+        public float smoothing;
 
-            _vLookup[e] = v;
-            _xfLookup[e] = xf;
+        // Writes: Velocity, LocalTransform
+        // Reads : DesiredVelocity
+        void Execute(ref LocalTransform xf,
+                     ref Velocity v,
+                     in DesiredVelocity dv)
+        {
+            v.Value = math.lerp(v.Value, dv.Value, smoothing);
+            xf.Position += v.Value * dt;     // integrate
         }
     }
 }

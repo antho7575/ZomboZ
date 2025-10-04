@@ -11,4 +11,5 @@ public struct WanderState : IComponentData
 {
     public float3 Target;
     public float RepathTimer;
+    public int Initialized; // bool as int (for IComponentData)
 }

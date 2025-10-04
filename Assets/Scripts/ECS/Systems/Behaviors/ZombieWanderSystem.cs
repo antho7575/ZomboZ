@@ -1,61 +1,81 @@
-﻿using Unity.Collections;
+﻿using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+
 [UpdateInGroup(typeof(SimulationSystemGroup))]
-[UpdateAfter(typeof(ZombieUtilitySelectorSystem))]
 public partial struct ZombieWanderSystem : ISystem
 {
-    private EntityQuery _wanderQuery;
-    private ComponentLookup<LocalTransform> _xfLookup;
-    private ComponentLookup<MoveSpeed> _spdLookup;
-    private ComponentLookup<DesiredVelocity> _dvLookup;
-    private ComponentLookup<WanderState> _wsLookup;
+    [BurstCompile]
     public void OnCreate(ref SystemState s)
     {
-        _wanderQuery = new EntityQueryBuilder(Allocator.Temp).WithAll<ZombieTag, WanderTag, LocalTransform, MoveSpeed, DesiredVelocity>().Build(ref s);
-        _xfLookup = s.GetComponentLookup<LocalTransform>(true);
-        _spdLookup = s.GetComponentLookup<MoveSpeed>(true);
-        _dvLookup = s.GetComponentLookup<DesiredVelocity>(false);
-        _wsLookup = s.GetComponentLookup<WanderState>(false);
+        s.RequireForUpdate<ZombieTag>();
+        s.RequireForUpdate<WanderTag>();
+        s.RequireForUpdate<WanderState>(); // guarantees the job runs only if WanderState exists
     }
+
+    [BurstCompile]
     public void OnUpdate(ref SystemState s)
     {
-        float dt = SystemAPI.Time.DeltaTime; // refresh lookups each frame
-        _xfLookup.Update(ref s);
-        _spdLookup.Update(ref s);
-        _dvLookup.Update(ref s);
-        _wsLookup.Update(ref s);
-        var ecb = new EntityCommandBuffer(Allocator.Temp);
-        using var ents = _wanderQuery.ToEntityArray(Allocator.Temp);
-        for (int i = 0; i < ents.Length; i++)
-        {
-            var e = ents[i]; // ensure WanderState exists once
+        var dt = SystemAPI.Time.DeltaTime;
+        var timeSeed = (float)SystemAPI.Time.ElapsedTime;
 
-            if (!_wsLookup.HasComponent(e))
+        s.Dependency = new WanderJob
+        {
+            dt = dt,
+            timeSeed = timeSeed
+        }.ScheduleParallel(s.Dependency);
+    }
+
+    [BurstCompile]
+    [WithAll(typeof(ZombieTag), typeof(WanderTag), typeof(WanderState))]
+    partial struct WanderJob : IJobEntity
+    {
+        public float dt;
+        public float timeSeed;
+
+        // Runs for entities that already have WanderState
+        void Execute(ref WanderState ws,
+                     ref DesiredVelocity dv,
+                     in LocalTransform xf,
+                     in MoveSpeed spd,
+                     Entity e)
+        {
+            // First-tick lazy init (no structural change)
+            if (ws.Initialized == 0)
             {
-                var p = _xfLookup[e].Position;
-                ecb.AddComponent(e, new WanderState { Target = p, RepathTimer = 0f }); continue; // will start next frame
+                ws.Target = xf.Position;
+                ws.RepathTimer = 0f;
+                ws.Initialized = 1;
             }
-            var xf = _xfLookup[e];
-            var spd = _spdLookup[e];
-            var ws = _wsLookup[e]; // repath?
+
+            // countdown
             ws.RepathTimer -= dt;
-            float2 p2 = xf.Position.xz;
+
+            // distance^2 (avoid sqrt)
+            float2 p2 = new float2(xf.Position.x, ws.Target.z == 0 && xf.Position.z != 0 ? xf.Position.z : xf.Position.z); // no-op guard
+            p2 = new float2(xf.Position.x, xf.Position.z);
             float2 t2 = new float2(ws.Target.x, ws.Target.z);
-            float dist = math.distance(p2, t2);
-            if (ws.RepathTimer <= 0f || dist < 0.5f)
-            { // light RNG using entity index + time
-                uint seed = (uint)(e.Index ^ (int)(SystemAPI.Time.ElapsedTime * 997.0f)) | 1u;
-                var r = Unity.Mathematics.Random.CreateFromIndex(seed); float radius = r.NextFloat(3f, 8f); float angle = r.NextFloat(0f, 6.2831853f);
-                float3 offset = new float3(math.cos(angle), 0, math.sin(angle)) * radius; ws.Target = xf.Position + offset; ws.RepathTimer = r.NextFloat(1.5f, 3.5f);
-            } // write desired velocity
+            float dist2 = math.lengthsq(p2 - t2);
+
+            // Need new target?
+            if (ws.RepathTimer <= 0f || dist2 < 0.25f) // 0.5m radius -> 0.5^2
+            {
+                // Per-entity lightweight RNG
+                uint seed = (uint)(e.Index ^ (int)(timeSeed * 997.0f)) | 1u;
+                var r = Unity.Mathematics.Random.CreateFromIndex(seed);
+
+                float radius = r.NextFloat(3f, 8f);
+                float angle = r.NextFloat(0f, 2f * math.PI);
+                float3 offset = new float3(math.cos(angle), 0f, math.sin(angle)) * radius;
+
+                ws.Target = xf.Position + offset;
+                ws.RepathTimer = r.NextFloat(1.5f, 3.5f);
+            }
+
+            // Desired velocity (XZ)
             float3 dir = ws.Target - xf.Position; dir.y = 0f;
-            var dv = _dvLookup[e];
-            dv.Value = math.normalizesafe(dir) * math.max(0.01f, spd.Value); _dvLookup[e] = dv; // write back state
-            _wsLookup[e] = ws;
+            dv.Value = math.normalizesafe(dir) * math.max(0.01f, spd.Value);
         }
-        ecb.Playback(s.EntityManager);
-        ecb.Dispose();
     }
 }

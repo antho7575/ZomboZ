@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 206060522}
   - component: {fileID: 206060527}
   - component: {fileID: 206060525}
+  - component: {fileID: 206060528}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -225,7 +226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 317994667d5661444b7686270daebadd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CullingSettingsAuthoring
-  MaxVisibleRadius: 20
+  MaxVisibleRadius: 200
 --- !u!114 &206060527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -270,6 +271,33 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &206060528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 206060521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2330729087c8a1345a0ff56ff11a4d62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SimpleFlyOrbitCamera
+  holdRightMouseToLook: 1
+  lookSensitivity: 2
+  invertY: 0
+  minPitch: -89
+  maxPitch: 89
+  moveSpeed: 8
+  fastMultiplier: 4
+  slowMultiplier: 0.25
+  ascendKey: 32
+  descendKey: 306
+  orbitTarget: {fileID: 0}
+  orbitPivot: {x: 0, y: 0, z: 0}
+  orbitDistance: 10
+  minOrbitDistance: 0.5
+  maxOrbitDistance: 200
 --- !u!1 &235835839
 GameObject:
   m_ObjectHideFlags: 0

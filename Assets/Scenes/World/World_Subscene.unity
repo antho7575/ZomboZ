@@ -198,8 +198,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ZombieSpawnerAuthoring
   ZombiePrefab: {fileID: 3725938886595844628, guid: ddccc48184bc7ac42ae023ca613a15dc, type: 3}
-  Count: 10000
-  Area: {x: 600, y: 600}
+  Count: 20000
+  Area: {x: 60, y: 60}
   Speed: 1
 --- !u!114 &952317727
 MonoBehaviour:

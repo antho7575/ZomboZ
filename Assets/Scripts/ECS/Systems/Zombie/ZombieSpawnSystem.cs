@@ -45,7 +45,8 @@ public partial struct ZombieSpawnSystem : ISystem
                 ecb.AddComponent(z, new ZombieBlackboard { TimeSinceSeenPlayer = 999f, LastKnownPlayerPos = pos, Hunger = 0f });
 
                 // (optional) start everyone as Wander so you see behavior immediately
-                // ecb.AddComponent<WanderTag>(z);
+                ecb.AddComponent<WanderTag>(z);
+                ecb.AddComponent<WanderState>(z);
             }
 
             ecb.RemoveComponent<ZombieSpawner>(e); // one-shot

@@ -13,9 +13,9 @@ public partial struct DebugDrawCulledZombiesSystem : ISystem
 
     public void OnCreate(ref SystemState s)
     {
-        _culledQuery = new EntityQueryBuilder(Allocator.Temp)
-            .WithAll<ZombieTag, DisableRendering, LocalTransform>() // only culled zombies
-            .Build(ref s);
+        //_culledQuery = new EntityQueryBuilder(Allocator.Temp)
+        //    .WithAll<ZombieTag, DisableRendering, LocalTransform>() // only culled zombies
+        //    .Build(ref s);
 
         _xfRO = s.GetComponentLookup<LocalTransform>(isReadOnly: true);
     }
@@ -24,13 +24,13 @@ public partial struct DebugDrawCulledZombiesSystem : ISystem
     {
         _xfRO.Update(ref s);
 
-        using var ents = _culledQuery.ToEntityArray(Allocator.Temp);
-        for (int i = 0; i < ents.Length; i++)
-        {
-            var e = ents[i];
-            var xf = _xfRO[e];
-            var p = xf.Position;
-            Debug.DrawLine(p, p + new float3(0, 1f, 0), Color.red, 0f, false);
-        }
+        //using var ents = _culledQuery.ToEntityArray(Allocator.Temp);
+        //for (int i = 0; i < ents.Length; i++)
+        //{
+        //    var e = ents[i];
+        //    var xf = _xfRO[e];
+        //    var p = xf.Position;
+        //    Debug.DrawLine(p, p + new float3(0, 1f, 0), Color.red, 0f, false);
+        //}
     }
 }

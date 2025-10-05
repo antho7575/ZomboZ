@@ -32,14 +32,14 @@ public partial struct ZombieSteeringSystem : ISystem
     }
 
     [BurstCompile]
-    [WithAll(typeof(ZombieTag))]   // only zombies
+    [WithAll(typeof(ZombieTag), typeof(ZombieActive))]   // only zombies
     partial struct SteeringJob : IJobEntity
     {
         public float dt;
         public float smoothing;
 
         // Writes: Velocity, LocalTransform
-        // Reads : DesiredVelocity
+        //// Reads : DesiredVelocity
         void Execute(ref LocalTransform xf,
                      ref Velocity v,
                      in DesiredVelocity dv)

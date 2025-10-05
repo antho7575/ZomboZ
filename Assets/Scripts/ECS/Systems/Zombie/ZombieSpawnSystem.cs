@@ -1,7 +1,9 @@
-﻿using Unity.Entities;
-using Unity.Mathematics;
-using Unity.Transforms;
+﻿using System.Runtime.CompilerServices;
 using Unity.Collections;
+using Unity.Entities;
+using Unity.Mathematics;
+using Unity.Rendering;
+using Unity.Transforms;
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
 public partial struct ZombieSpawnSystem : ISystem
@@ -47,6 +49,14 @@ public partial struct ZombieSpawnSystem : ISystem
                 // (optional) start everyone as Wander so you see behavior immediately
                 ecb.AddComponent<WanderTag>(z);
                 ecb.AddComponent<WanderState>(z);
+
+
+
+                // --- NEW: spatial cell + gating ---------------------------------
+                ecb.AddComponent<ZombieActive>(z);
+                ecb.SetComponentEnabled<ZombieActive>(z, false); // start off; culling will enable near chunks
+                ecb.AddComponent<DisableRendering>(z);
+                // -----------------------------------------------------------------
             }
 
             ecb.RemoveComponent<ZombieSpawner>(e); // one-shot

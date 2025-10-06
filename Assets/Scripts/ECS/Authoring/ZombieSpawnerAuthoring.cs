@@ -14,13 +14,13 @@ public class ZombieSpawnerAuthoring : MonoBehaviour
         public override void Bake(ZombieSpawnerAuthoring a)
         {
             var e = GetEntity(TransformUsageFlags.None);
-            var test = GetEntity(a.ZombiePrefab, TransformUsageFlags.Renderable | TransformUsageFlags.Dynamic);
+
             AddComponent(e, new ZombieSpawner
             {
                 Prefab = GetEntity(a.ZombiePrefab, TransformUsageFlags.Renderable | TransformUsageFlags.Dynamic),
                 Count = a.Count,
                 Area = new float2(a.Area.x, a.Area.y),
-                Speed = a.Speed
+                Speed = a.Speed                
             });
         }
     }

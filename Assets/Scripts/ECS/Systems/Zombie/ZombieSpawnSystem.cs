@@ -54,7 +54,7 @@ public partial struct ZombieSpawnSystem : ISystem
 
                 // --- NEW: spatial cell + gating ---------------------------------
                 ecb.AddComponent<ZombieActive>(z);
-                ecb.SetComponentEnabled<ZombieActive>(z, false); // start off; culling will enable near chunks
+                ecb.SetComponentEnabled<ZombieActive>(z, true); // start off; culling will enable near chunks
                 ecb.AddComponent<DisableRendering>(z);
                 // -----------------------------------------------------------------
             }

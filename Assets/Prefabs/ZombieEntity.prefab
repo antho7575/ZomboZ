@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3724667327555521818}
   - component: {fileID: 8974738544386572223}
+  - component: {fileID: 8504777833246627055}
   m_Layer: 0
   m_Name: ZombieEntity
   m_TagString: Untagged
@@ -45,6 +46,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4f7f1b1775957849922154bee63e4f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PrimaryRenderEntityAuthoring
+--- !u!114 &8504777833246627055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3725938886595844628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6790c28a4f001ed4189d827037bdce19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StartHiddenRendererAuthoring
 --- !u!1 &5762558502283037724
 GameObject:
   m_ObjectHideFlags: 0

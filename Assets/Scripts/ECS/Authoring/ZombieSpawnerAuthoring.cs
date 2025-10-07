@@ -1,6 +1,6 @@
 using Unity.Entities;
-using UnityEngine;
 using Unity.Mathematics;
+using UnityEngine;
 
 public class ZombieSpawnerAuthoring : MonoBehaviour
 {

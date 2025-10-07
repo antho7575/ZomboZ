@@ -28,7 +28,7 @@ public partial struct ZombieWanderSystem : ISystem
     }
 
     [BurstCompile]
-    [WithAll(typeof(ZombieTag), typeof(WanderTag), typeof(WanderState), typeof(ZombieActive))]
+    [WithAll(typeof(ZombieTag), typeof(WanderTag), typeof(WanderState))]
     partial struct WanderJob : IJobEntity
     {
         public float dt;

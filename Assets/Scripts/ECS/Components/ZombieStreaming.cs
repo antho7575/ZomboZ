@@ -1,4 +1,4 @@
-using Unity.Entities;
+﻿using Unity.Entities;
 using Unity.Mathematics;
 
 public struct ZombieId : IComponentData { public int Value; }
@@ -11,3 +11,42 @@ public struct ObserverSettings : IComponentData
     public int LoadRadius;      // e.g. 2
     public int HardUnloadRadius;// e.g. 3
 }
+
+public struct StreamingManaged : IComponentData { }
+
+// Tag each spawned zombie with the cell it belongs to (Shared so we can unload by cell fast)
+public struct CellId : ISharedComponentData
+{
+    public int2 Coord;
+}
+
+// Blob: grid → [start,len] into one flat positions array
+public struct ZombieIndexBlob
+{
+    public int2 minCoord;   // inclusive
+    public int2 size;       // width,height in cells
+    public float cellSize;  // meters per cell
+    public BlobArray<int> cellStart;     // size.x * size.y
+    public BlobArray<int> cellLen;       // size.x * size.y
+    public BlobArray<float3> positions;  // concatenated positions for all cells
+}
+
+// Runtime config/state singleton
+public struct ZombieStreamConfig : IComponentData
+{
+    public BlobAssetReference<ZombieIndexBlob> Index; // baked
+    public Entity Prefab;         // zombie prefab entity
+    public int LoadRadiusCells;   // e.g., 6 ⇒ ~169 cells loaded
+}
+
+public struct ZombieStreamState : IComponentData
+{
+    public int2 LastCenterCell;
+}
+
+// Keep the set of currently loaded cells on the singleton so we can diff cheaply
+public struct LoadedCell : IBufferElementData
+{
+    public int2 Coord;
+}
+

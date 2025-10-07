@@ -18,6 +18,11 @@ public partial struct ZombieSpawnSystem : ISystem
 
         var ecb = new EntityCommandBuffer(Allocator.TempJob);
 
+        // Optional: use Blob’s cell size if present
+        bool hasCfg = SystemAPI.TryGetSingleton<ZombieStreamConfig>(out var cfg);
+        float cellSize = hasCfg && cfg.Index.IsCreated ? cfg.Index.Value.cellSize : 32f; // fallback
+
+
         uint seed = 0xABCDEFu ^ (uint)(SystemAPI.Time.ElapsedTime * 1000.0);
         var rnd = new Unity.Mathematics.Random(seed == 0 ? 1u : seed);
 
@@ -53,10 +58,18 @@ public partial struct ZombieSpawnSystem : ISystem
 
 
                 // --- NEW: spatial cell + gating ---------------------------------
-                ecb.AddComponent<ZombieActive>(z);
-                ecb.SetComponentEnabled<ZombieActive>(z, true); // start off; culling will enable near chunks
-                ecb.AddComponent<DisableRendering>(z);
+                //ecb.AddComponent<ZombieActive>(z);
+                //ecb.SetComponentEnabled<ZombieActive>(z, true); // start off; culling will enable near chunks
+                //ecb.AddComponent<DisableRendering>(z);
                 // -----------------------------------------------------------------
+                // If you want THESE to be controlled by the streaming system:
+                if (hasCfg && cfg.Index.IsCreated)
+                {
+                    int2 cell = WorldToCell(pos.xz, cellSize);
+                    ecb.AddComponent(z, new CellCoord { Value = cell });
+                    ecb.AddComponent<StreamingManaged>(z);
+                }
+
             }
 
             ecb.RemoveComponent<ZombieSpawner>(e); // one-shot
@@ -65,4 +78,6 @@ public partial struct ZombieSpawnSystem : ISystem
         ecb.Playback(em);
         ecb.Dispose();
     }
+    static int2 WorldToCell(float2 xz, float cell)
+       => new int2((int)math.floor(xz.x / cell), (int)math.floor(xz.y / cell));
 }

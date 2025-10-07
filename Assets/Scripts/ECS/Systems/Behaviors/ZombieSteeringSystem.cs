@@ -32,7 +32,7 @@ public partial struct ZombieSteeringSystem : ISystem
     }
 
     [BurstCompile]
-    [WithAll(typeof(ZombieTag), typeof(ZombieActive))]   // only zombies
+    [WithAll(typeof(ZombieTag))]   // only zombies
     partial struct SteeringJob : IJobEntity
     {
         public float dt;

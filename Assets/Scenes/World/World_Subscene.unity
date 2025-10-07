@@ -213,7 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a1cd80f5c012c34d9a3da3884224e0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ZombieStreamAuthoring
-  HalfExtents: {x: 100000, y: 100000}
+  HalfExtents: {x: 10000, y: 10000}
   TotalCount: 1000000
   CellSize: 32
   RandomSeed: 1234567

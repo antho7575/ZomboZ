@@ -34,14 +34,17 @@ public struct ZombieIndexBlob
 // Runtime config/state singleton
 public struct ZombieStreamConfig : IComponentData
 {
-    public BlobAssetReference<ZombieIndexBlob> Index; // baked
-    public Entity Prefab;         // zombie prefab entity
-    public int LoadRadiusCells;   // e.g., 6 ⇒ ~169 cells loaded
+    public BlobAssetReference<ZombieIndexBlob> Index; // assumed defined elsewhere
+    public Entity Prefab;
+    public int LoadRadiusCells;     // base spawn radius (in cells)
+    public int VisibleMarginCells;  // inner-visible margin: Rvis = Rload - VisibleMarginCells
+    public float LookaheadSeconds;    // speed-based lookahead; 0 disables (e.g., 0.35f)
 }
 
 public struct ZombieStreamState : IComponentData
 {
-    public int2 LastCenterCell;
+    public int2 LastCenterCell;      // int.MinValue on first run
+    public float3 LastCenterWS;       // to estimate speed
 }
 
 // Keep the set of currently loaded cells on the singleton so we can diff cheaply

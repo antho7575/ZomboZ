@@ -32,8 +32,3 @@ public struct ZombieRecord
     public float TimeSinceSeen;  // for your utility selector later
 }
 
-
-public struct CurrentCell : IComponentData
-{
-    public int2 Coord;   // last-known grid cell
-}

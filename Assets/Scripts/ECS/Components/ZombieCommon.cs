@@ -1,5 +1,6 @@
 using Unity.Entities;
 using Unity.Mathematics;
+using UnityEngine;
 
 public struct ZombieTag : IComponentData { }
 public struct MoveSpeed : IComponentData { public float Value; }
@@ -32,3 +33,14 @@ public struct ZombieRecord
     public float TimeSinceSeen;  // for your utility selector later
 }
 
+public class ZombieGameObjectPrefab : IComponentData
+{
+    public GameObject Value;
+}
+
+
+
+public class ZombieAnimatorReference : ICleanupComponentData 
+{
+    public Animator Value;
+}

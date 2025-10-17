@@ -13,3 +13,8 @@ public struct WanderState : IComponentData
     public float RepathTimer;
     public int Initialized; // bool as int (for IComponentData)
 }
+
+public struct AnimState : IComponentData
+{
+    public float Speed; // meters/sec you want to feed the Animator
+}

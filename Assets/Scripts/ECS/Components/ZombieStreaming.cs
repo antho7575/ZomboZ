@@ -6,10 +6,10 @@ using Unity.Mathematics;
 public struct ZombieStreamConfig : IComponentData
 {
     public Entity Prefab;
-    public float CellSize;
-    public int VisibleRadiusCells;
+    public int TotalZombies;
+    public float2 HalfExtents;
+    public uint RandomSeed;
 }
-
 public struct ZombieIndexRef : IComponentData
 {
     public BlobAssetReference<ZombieIndexBlob> Blob;

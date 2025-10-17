@@ -160,15 +160,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 753799047}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a1cd80f5c012c34d9a3da3884224e0b, type: 3}
+  m_Script: {fileID: 11500000, guid: 60f535a077f56f9488e44140418ac89d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ZombieStreamAuthoring
+  m_EditorClassIdentifier: Assembly-CSharp::ZombieSpawnerAuthoring
   ZombiePrefab: {fileID: 9217976434701586955, guid: fe47f06d785853f47a6bf46b29bff3cf, type: 3}
-  TotalZombies: 100000
-  HalfExtents: {x: 1000, y: 1000}
-  RandomSeed: 12345
-  CellSize: 32
-  VisibleRadiusCells: 6
+  TotalZombies: 1000
+  HalfExtents: {x: 60, y: 60}
+  RandomSeed: 1234
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

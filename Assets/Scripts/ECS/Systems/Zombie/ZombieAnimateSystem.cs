@@ -1,36 +1,45 @@
-﻿using Unity.Collections;
+﻿using Unity.Burst;
 using Unity.Entities;
 using Unity.Transforms;
-using UnityEngine;
+
+// Rukhanka namespaces (adjust if yours differ)
+using Rukhanka;                  // for FastAnimatorParameter
 
 [UpdateInGroup(typeof(PresentationSystemGroup), OrderFirst = true)]
 public partial struct ZombieAnimateSystem : ISystem
 {
+    // cache parameter IDs (hashed once)
+    FastAnimatorParameter speedParam;
+
+    public void OnCreate(ref SystemState state)
+    {
+        // Name must match your controller parameter exactly
+        speedParam = new FastAnimatorParameter("Speed");
+    }
+
+    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        //// 1️⃣ Only create GameObjects when missing
-        //var ecb = new EntityCommandBuffer(Allocator.Temp);
-        //foreach (var (prefab, entity) in
-        //         SystemAPI.Query<ZombieGameObjectPrefab>().WithNone<ZombieAnimatorReference>().WithEntityAccess())
-        //{
-        //    var go = Object.Instantiate(prefab.Value);
-        //    var anim = go.GetComponent<Animator>();
-        //    ecb.AddComponent(entity, new ZombieAnimatorReference { Value = anim });
-        //}
-        //ecb.Playback(state.EntityManager);
-        //ecb.Dispose();
+        var job = new SetAnimParamsJob
+        {
+            speedParam = speedParam
+        };
 
-        //// 2️⃣ Only update changed anim states
-        //foreach (var (transform, animatorRef, animState) in
-        //         SystemAPI.Query<LocalTransform, ZombieAnimatorReference, AnimState>()
-        //         .WithChangeFilter<AnimState>())
-        //{
-        //    var anim = animatorRef.Value;
-        //    if (anim == null) continue;
+        state.Dependency = job.ScheduleParallel(state.Dependency);
+    }
 
-        //    anim.SetFloat("Speed", animState.Speed);
-        //    var t = anim.transform;
-        //    t.SetPositionAndRotation(transform.Position, transform.Rotation);
-        //}
+    // Only run for entities that have Rukhanka's AnimatorParametersAspect AND your anim state
+    // and only when AnimState changed (saves lots of work).
+    [BurstCompile]
+    [WithChangeFilter(typeof(AnimState))]
+    partial struct SetAnimParamsJob : IJobEntity
+    {
+        public FastAnimatorParameter speedParam;
+
+        // The aspect binds to the animator on the entity; no GameObject/Animator calls here.
+        void Execute(AnimatorParametersAspect animParams, in AnimState anim)
+        {
+            animParams.SetParameterValue(speedParam, anim.Speed);
+        }
     }
 }

@@ -27,13 +27,13 @@ public class ZombieStreamAuthoring : MonoBehaviour
             var holder = GetEntity(TransformUsageFlags.None);
             var prefab = GetEntity(a.ZombiePrefab, TransformUsageFlags.Dynamic | TransformUsageFlags.Renderable);
 
-            // Config singleton
-            AddComponent(holder, new ZombieStreamConfig
-            {
-                Prefab = prefab,
-                CellSize = a.CellSize,
-                VisibleRadiusCells = a.VisibleRadiusCells
-            });
+            //// Config singleton
+            //AddComponent(holder, new ZombieStreamConfig
+            //{
+            //    Prefab = prefab,
+            //    CellSize = a.CellSize,
+            //    VisibleRadiusCells = a.VisibleRadiusCells
+            //});
 
             // ---- Generate random positions (managed) and bucket by cell ----
             var rng = new Unity.Mathematics.Random(a.RandomSeed);

@@ -9,7 +9,7 @@ namespace ZomboZ.Runtime
     {
         protected override void OnCreate()
         {
-            RequireForUpdate<ZombieStreamConfig>();
+            RequireForUpdate<ZombieSpawnSettings>();
         }
 
         protected override void OnUpdate()

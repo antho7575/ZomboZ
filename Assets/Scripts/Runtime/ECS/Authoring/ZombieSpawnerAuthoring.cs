@@ -8,21 +8,21 @@ namespace ZomboZ.Runtime
     public class ZombieSpawnerAuthoring : MonoBehaviour
     {
         public GameObject ZombiePrefab;
-        public int TotalZombies = 100000;
-        public Vector2 HalfExtents = new(1000, 1000);
-        public uint RandomSeed = 1234;
+        public float SpawnInterval = 2f;
+        public float SpawnRadius = 50f;
+        public float DespawnDistance = 80f;
 
         class Baker : Baker<ZombieSpawnerAuthoring>
         {
             public override void Bake(ZombieSpawnerAuthoring a)
             {
                 var entity = GetEntity(TransformUsageFlags.None);
-                AddComponent(entity, new ZombieStreamConfig
+                AddComponent(entity, new ZombieSpawnSettings
                 {
                     Prefab = GetEntity(a.ZombiePrefab, TransformUsageFlags.Dynamic | TransformUsageFlags.Renderable),
-                    TotalZombies = a.TotalZombies,
-                    HalfExtents = a.HalfExtents,
-                    RandomSeed = a.RandomSeed
+                    SpawnInterval = a.SpawnInterval,
+                    SpawnRadius = a.SpawnRadius,
+                    DespawnDistance = a.DespawnDistance,
                 });
             }
         }

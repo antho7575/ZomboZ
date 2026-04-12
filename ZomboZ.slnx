@@ -10,7 +10,6 @@
   <Project Path="Rukhanka.Toolbox.csproj" />
   <Project Path="ZomboZ.Infrastructure.Persistence.csproj" />
   <Project Path="ZomboZ.Runtime.csproj" />
-  <Project Path="ZomboZ.Core.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="ZomboZ.Infrastructure.Mappers.csproj" />
   <Project Path="Rukhanka.Tests.csproj" />

@@ -1,4 +1,6 @@
-namespace ZomboZ.Core.Ports
+using System.Collections.Generic;
+
+namespace ZomboZ.Infrastructure.Cache
 {
     public interface ICache<TKey, TValue>
     {
@@ -6,5 +8,6 @@ namespace ZomboZ.Core.Ports
         void Set(TKey key, TValue value);
         bool Remove(TKey key);
         void Clear();
+        IEnumerable<TValue> GetAllValues();
     }
 }

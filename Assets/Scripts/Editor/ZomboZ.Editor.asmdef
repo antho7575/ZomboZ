@@ -2,7 +2,7 @@
   "name": "ZomboZ.Editor",
   "rootNamespace": "ZomboZ.Editor",
   "references": [
-    "ZomboZ.Core",
+    "ZomboZ.Infrastructure.Cache",
     "ZomboZ.Runtime"
   ],
   "optionalUnityReferences": [],

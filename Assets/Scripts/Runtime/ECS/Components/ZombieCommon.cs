@@ -23,31 +23,3 @@ public struct ZombieGuid : IComponentData
 {
     public Guid Value;
 }
-
-// Simple LOD tags
-public struct LODNear : IComponentData { }
-public struct LODMid : IComponentData { }
-public struct LODFar : IComponentData { }
-
-//// Store this for unloaded zombies
-//public struct ZombieRecord
-//{
-//    public int Id;
-//    public int2 Sector;
-//    public float3 Pos;
-//    public float Heading;       // radians
-//    public uint WanderSeed;
-//    public float TimeSinceSeen;  // for your utility selector later
-//}
-
-public class ZombieGameObjectPrefab : IComponentData
-{
-    public GameObject Value;
-}
-
-
-
-public class ZombieAnimatorReference : ICleanupComponentData 
-{
-    public Animator Value;
-}

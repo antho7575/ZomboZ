@@ -4,9 +4,9 @@ namespace ZomboZ.Runtime
 {
     public struct ZombieSpawnSettings : IComponentData
     {
-        public float SpawnInterval;
-        public float SpawnRadius;
-        public int DesiredCount;
-        public float DespawnDistance;
+        public Entity Prefab { get; set; }
+        public float SpawnInterval { get; set; }
+        public float SpawnRadius { get; set; }
+        public float DespawnDistance { get; set; }
     }
 }

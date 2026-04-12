@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using ZomboZ.Core.Ports;
 
 namespace ZomboZ.Infrastructure.Cache
 {
@@ -66,6 +65,14 @@ namespace ZomboZ.Infrastructure.Cache
         {
             map.Clear();
             list.Clear();
+        }
+
+        public IEnumerable<TValue> GetAllValues()
+        {
+            foreach (var kvp in list)
+            {
+                yield return kvp.Value;
+            }
         }
     }
 }

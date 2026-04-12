@@ -8,36 +8,40 @@ namespace ZomboZ.Runtime
 {
     public static class ZombieCacheService
     {
-        static readonly Dictionary<Guid, ZombieCacheModel> _cache = new Dictionary<Guid, ZombieCacheModel>();
+        static ICache<Guid, ZombieCacheModel> _cache;
+
+        public static void Initialize(ICache<Guid, ZombieCacheModel> cache)
+        {
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+        }
 
         public static void AddOrUpdate(ZombieCacheModel r)
         {
             r.LastSeenTicks = System.DateTime.UtcNow.Ticks;
-            _cache[r.Id] = r;
+            _cache.Set(r.Id, r);
         }
 
         public static void Remove(Guid id)
         {
-            if (_cache.ContainsKey(id))
-                _cache.Remove(id);
+            _cache.Remove(id);
         }
 
         public static List<ZombieCacheModel> QueryNear(float3 center, float radius)
         {
             var sq = radius * radius;
             var list = new List<ZombieCacheModel>();
-            foreach (var kv in _cache.Values)
+            foreach (var model in _cache.GetAllValues())
             {
-                if (kv.IsSpawned) continue;
+                if (model.IsSpawned) continue;
 
-                var dx = kv.PosX - center.x;
-                var dz = kv.PosZ - center.z;
+                var dx = model.PosX - center.x;
+                var dz = model.PosZ - center.z;
                 if (dx * dx + dz * dz <= sq)
-                    list.Add(kv);
+                    list.Add(model);
             }
             return list;
         }
 
-        public static List<ZombieCacheModel> All() => _cache.Values.ToList();
+        public static List<ZombieCacheModel> All() => _cache.GetAllValues().ToList();
     }
 }

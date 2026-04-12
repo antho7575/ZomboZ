@@ -1,28 +1,6 @@
 ﻿using System;
 using Unity.Entities;
-using Unity.Mathematics;
 using Unity.Transforms;
-
-/// <summary>
-/// Data used to create a zombie instance.
-/// </summary>
-public struct ZombieCreateRequest
-{
-    public Entity Prefab;
-    public Guid Id;
-    public float3 Position;
-    public quaternion Rotation;
-    public float Scale;
-
-    public float MoveSpeed;
-    public float Hunger;
-    public float3 Velocity;
-    public float3 DesiredVelocity;
-    public float TimeSinceSeenPlayer;
-
-    public bool WithWander;
-    public bool WithAnimation;
-}
 
 /// <summary>
 /// Helper for creating zombies with consistent components.

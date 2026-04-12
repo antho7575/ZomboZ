@@ -1,0 +1,20 @@
+{
+  "name": "ZomboZ.Editor",
+  "rootNamespace": "ZomboZ.Editor",
+  "references": [
+    "ZomboZ.Core",
+    "ZomboZ.Runtime"
+  ],
+  "optionalUnityReferences": [],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

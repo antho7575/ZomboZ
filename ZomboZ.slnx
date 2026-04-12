@@ -1,0 +1,18 @@
+﻿<Solution>
+  <Project Path="Unity.Entities.Graphics.csproj" />
+  <Project Path="Rukhanka.Runtime.csproj" />
+  <Project Path="Unity.Collections.csproj" />
+  <Project Path="Unity.Entities.csproj" />
+  <Project Path="Rukhanka.Hybrid.csproj" />
+  <Project Path="Rukhanka.Editor.csproj" />
+  <Project Path="Unity.Entities.Hybrid.csproj" />
+  <Project Path="RukhankaSamples.csproj" />
+  <Project Path="Rukhanka.Toolbox.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="ZomboZ.Runtime.csproj" />
+  <Project Path="ZomboZ.Core.csproj" />
+  <Project Path="Rukhanka.Tests.csproj" />
+  <Project Path="ZomboZ.Infrastructure.Cache.csproj" />
+  <Project Path="Rukhanka.DebugDrawer.csproj" />
+  <Project Path="ZomboZ.Editor.csproj" />
+</Solution>

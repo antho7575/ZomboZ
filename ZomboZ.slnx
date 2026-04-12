@@ -8,9 +8,11 @@
   <Project Path="Unity.Entities.Hybrid.csproj" />
   <Project Path="RukhankaSamples.csproj" />
   <Project Path="Rukhanka.Toolbox.csproj" />
-  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="ZomboZ.Infrastructure.Persistence.csproj" />
   <Project Path="ZomboZ.Runtime.csproj" />
   <Project Path="ZomboZ.Core.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="ZomboZ.Infrastructure.Mappers.csproj" />
   <Project Path="Rukhanka.Tests.csproj" />
   <Project Path="ZomboZ.Infrastructure.Cache.csproj" />
   <Project Path="Rukhanka.DebugDrawer.csproj" />

@@ -2,7 +2,8 @@
   "name": "ZomboZ.Infrastructure.Cache",
   "rootNamespace": "ZomboZ.Infrastructure.Cache",
   "references": [
-    "ZomboZ.Core"
+    "ZomboZ.Core",
+    "Unity.Mathematics"
   ],
   "optionalUnityReferences": [],
   "includePlatforms": [],

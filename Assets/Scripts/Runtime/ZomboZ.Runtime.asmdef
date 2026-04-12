@@ -4,6 +4,8 @@
     "references": [
         "ZomboZ.Core",
         "ZomboZ.Infrastructure.Cache",
+        "ZomboZ.Infrastructure.Mappers",
+        "ZomboZ.Infrastructure.Persistence",
         "Unity.Mathematics",
         "Unity.Burst",
         "Unity.Collections",

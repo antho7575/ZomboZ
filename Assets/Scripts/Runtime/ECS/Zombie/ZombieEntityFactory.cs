@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿using System;
+using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
@@ -8,6 +9,7 @@ using Unity.Transforms;
 public struct ZombieCreateRequest
 {
     public Entity Prefab;
+    public Guid Id;
     public float3 Position;
     public quaternion Rotation;
     public float Scale;
@@ -55,6 +57,12 @@ public static class ZombieEntityFactory
             LastKnownPlayerPos = req.Position,
             Hunger = req.Hunger
         });
+
+        // Attach persisted Guid if provided
+        if (req.Id != Guid.Empty)
+        {
+            em.AddComponentData(e, new ZombieGuid { Value = req.Id });
+        }
 
         return e;
     }

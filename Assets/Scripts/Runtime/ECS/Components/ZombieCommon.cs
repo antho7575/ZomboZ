@@ -1,3 +1,4 @@
+using System;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
@@ -17,21 +18,27 @@ public struct ZombieBlackboard : IComponentData
     public float Hunger; // 0..1 if you like
 }
 
+// Persistent GUID for an active zombie entity (maps back to persisted record)
+public struct ZombieGuid : IComponentData
+{
+    public Guid Value;
+}
+
 // Simple LOD tags
 public struct LODNear : IComponentData { }
 public struct LODMid : IComponentData { }
 public struct LODFar : IComponentData { }
 
-// Store this for unloaded zombies
-public struct ZombieRecord
-{
-    public int Id;
-    public int2 Sector;
-    public float3 Pos;
-    public float Heading;       // radians
-    public uint WanderSeed;
-    public float TimeSinceSeen;  // for your utility selector later
-}
+//// Store this for unloaded zombies
+//public struct ZombieRecord
+//{
+//    public int Id;
+//    public int2 Sector;
+//    public float3 Pos;
+//    public float Heading;       // radians
+//    public uint WanderSeed;
+//    public float TimeSinceSeen;  // for your utility selector later
+//}
 
 public class ZombieGameObjectPrefab : IComponentData
 {

@@ -1,0 +1,17 @@
+{
+  "name": "ZomboZ.Infrastructure.Persistence",
+  "rootNamespace": "ZomboZ.Infrastructure.Persistence",
+  "references": [
+    "ZomboZ.Core"
+  ],
+  "optionalUnityReferences": [],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

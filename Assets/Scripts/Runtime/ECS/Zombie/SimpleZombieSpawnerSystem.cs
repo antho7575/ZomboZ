@@ -6,8 +6,8 @@ namespace ZomboZ.Runtime
 {
     public partial class SimpleZombieSpawnerSystem : SystemBase
     {
-        double _lastSpawnTime = 0.0;
-
+        Throttle _throttle = new Throttle(0.5);
+        
         protected override void OnCreate()
         {
             RequireForUpdate<ZombieSpawnSettings>();
@@ -16,22 +16,17 @@ namespace ZomboZ.Runtime
         protected override void OnUpdate()
         {
             var em = EntityManager;
-
-            // timing
-            var now = SystemAPI.Time.ElapsedTime;
             var settings = SystemAPI.GetSingleton<ZombieSpawnSettings>();
-            if (now - _lastSpawnTime < settings.SpawnInterval)
-            {
+
+            // Throttle: only check every 0.5 seconds (not every frame!)
+            if (!_throttle.ShouldExecute(SystemAPI.Time.ElapsedTime))
                 return;
-            }
-            
-            _lastSpawnTime = now;
 
             // Get player position
             float3 center = PlayerService.GetPlayerPosition();
 
             // Use cache to restore nearby zombies first
-            var nearby = ZombieCacheService.QueryNear(center, settings.SpawnRadius);
+            var nearby = ZombieCacheService.QueryNearAndNotSpawned(center, settings.SpawnRadius);
 
             // Spawn restored zombies
             for (int i = 0; i < nearby.Count; i++)

@@ -12,7 +12,7 @@ namespace ZomboZ.Runtime
     /// </summary>
     public partial class ZombieDespawnSystem : SystemBase
     {
-        double _lastCheckTime;
+        Throttle _throttle = new Throttle(0.5);
 
         protected override void OnCreate()
         {
@@ -21,16 +21,11 @@ namespace ZomboZ.Runtime
 
         protected override void OnUpdate()
         {
-            if (!HasSingleton<ZombieSpawnSettings>()) return;
-
             var settings = SystemAPI.GetSingleton<ZombieSpawnSettings>();
-            var now = SystemAPI.Time.ElapsedTime;
 
             // Throttle: only check every 0.5 seconds (not every frame!)
-            if (now - _lastCheckTime < 0.5)
+            if (!_throttle.ShouldExecute(SystemAPI.Time.ElapsedTime))
                 return;
-
-            _lastCheckTime = now;
 
             // Get player position
             float3 playerPos = PlayerService.GetPlayerPosition();

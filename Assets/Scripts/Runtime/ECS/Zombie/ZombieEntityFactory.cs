@@ -1,6 +1,7 @@
 ﻿using System;
 using Unity.Entities;
 using Unity.Transforms;
+using ZomboZ.Runtime;
 
 /// <summary>
 /// Helper for creating zombies with consistent components.
@@ -40,6 +41,9 @@ public static class ZombieEntityFactory
         if (req.Id != Guid.Empty)
         {
             em.AddComponentData(e, new ZombieGuid { Value = req.Id });
+
+            // Register in registry for fast lookup!
+            ZombieEntityRegistry.Register(req.Id, e);
         }
 
         return e;

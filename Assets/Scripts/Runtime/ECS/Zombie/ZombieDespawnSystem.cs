@@ -1,12 +1,19 @@
 using Unity.Entities;
 using Unity.Transforms;
 using Unity.Mathematics;
+using System.Linq;
 using ZomboZ.Infrastructure.Cache;
 
 namespace ZomboZ.Runtime
 {
+    /// <summary>
+    /// Despawns zombies that are outside the spawn radius and saves them to cache.
+    /// Uses cache spatial query + entity registry for O(1) lookups.
+    /// </summary>
     public partial class ZombieDespawnSystem : SystemBase
     {
+        double _lastCheckTime;
+
         protected override void OnCreate()
         {
             RequireForUpdate<ZombieSpawnSettings>();
@@ -15,50 +22,71 @@ namespace ZomboZ.Runtime
         protected override void OnUpdate()
         {
             if (!HasSingleton<ZombieSpawnSettings>()) return;
-            var settings = SystemAPI.GetSingleton<ZombieSpawnSettings>();
 
-            // Get player position via scene object (fallback origin)
-            float3 center = float3.zero;
-            var playerGo = UnityEngine.GameObject.FindWithTag("Player");
-            if (playerGo == null)
-                playerGo = UnityEngine.GameObject.Find("Player");
-            if (playerGo != null)
-            {
-                var p = playerGo.transform.position;
-                center = new float3(p.x, p.y, p.z);
-            }
+            var settings = SystemAPI.GetSingleton<ZombieSpawnSettings>();
+            var now = SystemAPI.Time.ElapsedTime;
+
+            // Throttle: only check every 0.5 seconds (not every frame!)
+            if (now - _lastCheckTime < 0.5)
+                return;
+
+            _lastCheckTime = now;
+
+            // Get player position
+            float3 playerPos = PlayerService.GetPlayerPosition();
 
             var em = EntityManager;
-            var despawnSq = settings.DespawnDistance * settings.DespawnDistance;
 
-            // Iterate zombies and despawn those far from player
-            var query = GetEntityQuery(ComponentType.ReadOnly<ZombieTag>(), ComponentType.ReadOnly<LocalTransform>());
-            using var entities = query.ToEntityArray(Unity.Collections.Allocator.Temp);
-            using var transforms = query.ToComponentDataArray<LocalTransform>(Unity.Collections.Allocator.Temp);
+            // Query cache for zombies that are outside the spawn radius and currently spawned
+            var toDespawn = ZombieCacheService.QueryOutsideAndSpawned(playerPos, settings.SpawnRadius);
 
-            for (int i = 0; i < entities.Length; i++)
+            
+            if (toDespawn.Count == 0)
+                return;
+
+            // Despawn each zombie outside the radius
+            foreach (var cached in toDespawn)
             {
-                var e = entities[i];
-                var t = transforms[i];
-                var dx = t.Position.x - center.x;
-                var dz = t.Position.z - center.z;
-                if (dx * dx + dz * dz > despawnSq)
+                // Find entity by GUID using registry (O(1) lookup!)
+                if (!ZombieEntityRegistry.TryGetEntity(cached.Id, out var targetEntity))
                 {
-                    var r = new ZombieCacheModel
-                    {
-                        Id = System.Guid.NewGuid(),
-                        PosX = t.Position.x,
-                        PosY = t.Position.y,
-                        PosZ = t.Position.z,
-                        RotationY = 0f,
-                        Health = 100,
-                        IsSpawned = false
-                    };
-                    ZombieCacheService.AddOrUpdate(r);
-                    ZombiePersistenceService.AddOrUpdate(r);
-
-                    em.DestroyEntity(e);
+                    // Entity not found in registry, mark as not spawned in cache
+                    cached.IsSpawned = false;
+                    ZombieCacheService.AddOrUpdate(cached);
+                    continue;
                 }
+
+                if (!em.Exists(targetEntity))
+                {
+                    cached.IsSpawned = false;
+                    ZombieCacheService.AddOrUpdate(cached);
+                    ZombieEntityRegistry.Unregister(cached.Id);
+                    continue;
+                }
+
+                // Get latest state before despawning
+                var transform = em.GetComponentData<LocalTransform>(targetEntity);
+                var blackboard = em.GetComponentData<ZombieBlackboard>(targetEntity);
+
+                // Get rotation Y from quaternion
+                var euler = math.degrees(math.atan2(
+                    2f * (transform.Rotation.value.w * transform.Rotation.value.y + transform.Rotation.value.x * transform.Rotation.value.z),
+                    1f - 2f * (transform.Rotation.value.y * transform.Rotation.value.y + transform.Rotation.value.z * transform.Rotation.value.z)));
+
+                // Update cache with latest state
+                cached.PosX = transform.Position.x;
+                cached.PosY = transform.Position.y;
+                cached.PosZ = transform.Position.z;
+                cached.RotationY = euler;
+                cached.Health = (int)blackboard.Hunger;
+                cached.IsSpawned = false;  // Mark as despawned
+                ZombieCacheService.AddOrUpdate(cached);
+
+                // Unregister from registry before destroying
+                ZombieEntityRegistry.Unregister(cached.Id);
+
+                // Destroy the entity
+                em.DestroyEntity(targetEntity);
             }
         }
     }

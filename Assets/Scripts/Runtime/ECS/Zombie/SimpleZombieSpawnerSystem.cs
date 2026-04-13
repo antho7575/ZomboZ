@@ -27,16 +27,8 @@ namespace ZomboZ.Runtime
             
             _lastSpawnTime = now;
 
-            // Get player position safely via scene object (falls back to world origin)
-            float3 center = float3.zero;
-            var playerGo = UnityEngine.GameObject.FindWithTag("Player");
-            if (playerGo == null)
-                playerGo = UnityEngine.GameObject.Find("Player");
-            if (playerGo != null)
-            {
-                var p = playerGo.transform.position;
-                center = new float3(p.x, p.y, p.z);
-            }
+            // Get player position
+            float3 center = PlayerService.GetPlayerPosition();
 
             // Use cache to restore nearby zombies first
             var nearby = ZombieCacheService.QueryNear(center, settings.SpawnRadius);

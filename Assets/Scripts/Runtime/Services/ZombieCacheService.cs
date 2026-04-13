@@ -26,7 +26,7 @@ namespace ZomboZ.Runtime
             _cache.Remove(id);
         }
 
-        public static List<ZombieCacheModel> QueryNear(float3 center, float radius)
+        public static List<ZombieCacheModel> QueryNearAndNotSpawned(float3 center, float radius)
         {
             var sq = radius * radius;
             var list = new List<ZombieCacheModel>();
@@ -41,6 +41,24 @@ namespace ZomboZ.Runtime
             }
             return list;
         }
+
+        public static List<ZombieCacheModel> QueryOutsideAndSpawned(float3 center, float radius)
+        {
+            var sq = radius * radius;
+            var list = new List<ZombieCacheModel>();
+            foreach (var model in _cache.GetAllValues())
+            {
+                if (!model.IsSpawned) continue;
+
+                var dx = model.PosX - center.x;
+                var dz = model.PosZ - center.z;
+                if (dx * dx + dz * dz > sq)
+                    list.Add(model);
+            }
+            return list;
+        }
+
+
 
         public static List<ZombieCacheModel> All() => _cache.GetAllValues().ToList();
     }
